@@ -17,6 +17,8 @@ async function connectDB() {
 connectDB();
 
 const server = express();
-server.use('/api/productos', productsRouter);
+
+server.use(express.json());
+server.use('/api/products', productsRouter);
 
 export default server;
