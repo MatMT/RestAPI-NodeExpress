@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createProduct, getProducts, getProductById } from './handlers/product';
+import { createProduct, getProducts, getProductById, updateProduct, getProductJsonById, updateAvailablity, deleteProduct } from './handlers/product';
 import { body, param } from 'express-validator';
 import { handleInputErrors } from './middleware';
 
@@ -10,7 +10,7 @@ router.get('/', getProducts);
 router.get('/:id',
     param('id').isInt().withMessage('ID no valid'),
     handleInputErrors,
-    getProductById
+    getProductJsonById
 );
 
 router.post('/',
@@ -26,12 +26,30 @@ router.post('/',
     createProduct
 );
 
-router.put('/', (req, res) => {
-    res.json("From Put");
-});
+router.put('/:id',
+    param('id').isInt().withMessage('ID no valid'),
+    body('name')
+        .notEmpty().withMessage('The name cannot be empty'),
+    body('price')
+        .isNumeric().withMessage("Value no valid")
+        .notEmpty().withMessage('The price cannot be empty')
+        .custom(value => value > 0).withMessage("Price no valid"),
+    body('availability')
+        .isBoolean().withMessage('Value no valid for availability'),
 
-router.delete('/', (req, res) => {
-    res.json("From Delete");
-});
+    handleInputErrors,
+    updateProduct);
+
+router.patch('/:id',
+    param('id').isInt().withMessage('ID no valid'),
+    handleInputErrors,
+    updateAvailablity
+)
+
+router.delete('/:id',
+    param('id').isInt().withMessage('ID no valid'),
+    handleInputErrors,
+    deleteProduct
+);
 
 export default router;

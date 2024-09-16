@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Product from "../models/Product.model";
+import { body } from "express-validator";
 
 export const getProducts = async (req: Request, res: Response) => {
     try {
@@ -15,7 +16,7 @@ export const getProducts = async (req: Request, res: Response) => {
     }
 }
 
-export const getProductById = async (req: Request, res: Response) => {
+export const getProductById = async (req: Request, res: Response): Promise<Product | any> => {
     try {
         const { id } = req.params;
         const product = await Product.findByPk(id);
@@ -26,10 +27,14 @@ export const getProductById = async (req: Request, res: Response) => {
             });
         }
 
-        res.json({ data: product });
+        return product;
     } catch (error) {
         console.log(error);
     }
+}
+
+export const getProductJsonById = async (req: Request, res: Response) => {
+    return res.json(await getProductById(req, res));
 }
 
 export const createProduct = async (req: Request, res: Response) => {
@@ -40,3 +45,33 @@ export const createProduct = async (req: Request, res: Response) => {
         console.log(error);
     }
 }
+
+export const updateProduct = async (req: Request, res: Response) => {
+    const product = await getProductById(req, res) as Product;
+
+    // Actualizar
+    product.name = req.body.name;
+    product.price = req.body.price;
+    product.availability = req.body.availability;
+
+    await product.save();
+    res.json({ data: product });
+};
+
+export const updateAvailablity = async (req: Request, res: Response) => {
+    const product = await getProductById(req, res) as Product;
+
+    // Actualizar
+    product.availability = !product.dataValues.availability;
+    await product.save();
+
+    res.json({ data: product });
+};
+
+export const deleteProduct = async (req: Request, res: Response) => {
+    const product = await getProductById(req, res) as Product;
+
+    // Actualizar
+    await product.destroy();
+    res.json({ data: 'Product Deleted' })
+};
