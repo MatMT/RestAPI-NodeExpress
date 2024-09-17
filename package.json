@@ -8,6 +8,7 @@
     "dev": "nodemon --exec tsx src/index.ts",
     "build": "npx tsc",
     "test": "jest --detectOpenHandles",
+    "test:coverage": "npm run pretest && jest --detectOpenHandles --coverage",
     "pretest": "npx tsx ./src/data --clear"
   },
   "repository": {

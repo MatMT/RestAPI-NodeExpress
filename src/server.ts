@@ -4,13 +4,13 @@ import productsRouter from './router';
 import db from './config/db';
 
 // Conect to DataBase
-async function connectDB() {
+export async function connectDB() {
     try {
         await db.authenticate();
         db.sync();
         // console.log(colors.bgGreen("Conecction Success to DB"));
-    } catch (e) {
-        console.log(colors.red.bold(e));
+    } catch (error) {
+        console.log(colors.red.bold('There was an error connecting to the DB'));
     }
 }
 
