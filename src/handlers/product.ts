@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Product from "../models/Product.model";
-import { body } from "express-validator";
 
 export const getProducts = async (req: Request, res: Response) => {
     try {
@@ -12,29 +11,21 @@ export const getProducts = async (req: Request, res: Response) => {
         });
         res.json({ data: products });
     } catch (error) {
-        console.log(error);
+        throw (error);
     }
 }
 
-export const getProductById = async (req: Request, res: Response): Promise<Product | any> => {
-    try {
-        const { id } = req.params;
-        const product = await Product.findByPk(id);
+export const getProductById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const product = await Product.findByPk(id);
 
-        if (!product) {
-            return res.status(404).json({
-                error: 'Product not found'
-            });
-        }
-
-        return product;
-    } catch (error) {
-        console.log(error);
+    if (!product) {
+        return res.status(404).json({
+            error: 'Product not found'
+        });
     }
-}
 
-export const getProductJsonById = async (req: Request, res: Response) => {
-    return res.json(await getProductById(req, res));
+    return res.json({data: product});
 }
 
 export const createProduct = async (req: Request, res: Response) => {
@@ -42,12 +33,19 @@ export const createProduct = async (req: Request, res: Response) => {
         const product = await Product.create(req.body)
         res.status(201).json({ data: product });
     } catch (error) {
-        console.log(error);
+        throw (error);
     }
 }
 
 export const updateProduct = async (req: Request, res: Response) => {
-    const product = await getProductById(req, res) as Product;
+    const { id } = req.params;
+    const product = await Product.findByPk(id);
+
+    if (!product) {
+        return res.status(404).json({
+            error: 'Product not found'
+        });
+    }
 
     // Actualizar
     product.name = req.body.name;
@@ -59,7 +57,14 @@ export const updateProduct = async (req: Request, res: Response) => {
 };
 
 export const updateAvailablity = async (req: Request, res: Response) => {
-    const product = await getProductById(req, res) as Product;
+    const { id } = req.params;
+    const product = await Product.findByPk(id);
+
+    if (!product) {
+        return res.status(404).json({
+            error: 'Product not found'
+        });
+    }
 
     // Actualizar
     product.availability = !product.dataValues.availability;
@@ -69,7 +74,14 @@ export const updateAvailablity = async (req: Request, res: Response) => {
 };
 
 export const deleteProduct = async (req: Request, res: Response) => {
-    const product = await getProductById(req, res) as Product;
+    const { id } = req.params;
+    const product = await Product.findByPk(id);
+
+    if (!product) {
+        return res.status(404).json({
+            error: 'Product not found'
+        });
+    }
 
     // Actualizar
     await product.destroy();
