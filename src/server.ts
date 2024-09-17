@@ -1,5 +1,7 @@
-import colors from 'colors';
 import express from 'express';
+import colors from 'colors';
+import swagerUI from 'swagger-ui-express';
+import swaggerSpec from './config/swagger';
 import productsRouter from './router';
 import db from './config/db';
 
@@ -21,8 +23,11 @@ const server = express();
 server.use(express.json());
 server.use('/api/products', productsRouter);
 
-server.get('/api', (req, res) => {
-    res.json({ msg: 'From API' })
-});
+// server.get('/api', (req, res) => {
+//     res.json({ msg: 'From API' })
+// });
+
+// Docs
+server.use('/docs', swagerUI.serve, swagerUI.setup(swaggerSpec));
 
 export default server;
