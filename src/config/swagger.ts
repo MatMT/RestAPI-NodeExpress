@@ -1,4 +1,5 @@
 import swaggerJSDoc from "swagger-jsdoc";
+import {SwaggerUiOptions} from "swagger-ui-express";
 
 const options: swaggerJSDoc.Options = {
     swaggerDefinition: {
@@ -19,4 +20,25 @@ const options: swaggerJSDoc.Options = {
 }
 
 const swaggerSpec = swaggerJSDoc(options);
+
+const swagggerUiOptions: SwaggerUiOptions = {
+    customCss: `
+        .topbar-wrapper .link {
+            content: url('https://www.iconarchive.com/download/i109305/wikipedia/flags/SV-El-Salvador-Flag.1024.png');
+            height: 120px;
+            width: auto;
+        }
+        .swagger-ui .topbar a {
+            flex: 0;
+        }
+        .swagger-ui .topbar {
+            background-color: #002442;
+        }
+    `,
+    customSiteTitle: 'Documentation REST API Express / TypeScript',
+}
+
 export default swaggerSpec;
+export {
+    swagggerUiOptions
+}
