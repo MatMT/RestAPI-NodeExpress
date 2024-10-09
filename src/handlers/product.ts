@@ -7,6 +7,7 @@ export const getProducts = async (req: Request, res: Response) => {
             order: [
                 ['price', 'DESC']
             ],
+            attributes: {exclude: ['createdAt', 'updatedAt']},
             limit: 10
         });
         res.json({ data: products });

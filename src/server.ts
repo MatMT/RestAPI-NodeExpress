@@ -6,6 +6,7 @@ import swaggerSpec, {swagggerUiOptions} from './config/swagger';
 import productsRouter from './router';
 import db from './config/db';
 import dotenv from "dotenv";
+import morgan from "morgan";
 
 dotenv.config();
 
@@ -35,13 +36,12 @@ const corsOptions: CorsOptions = {
     }
 }
 server.use(cors(corsOptions));
-
 server.use(express.json());
-server.use('/api/products', productsRouter);
 
-// server.get('/api', (req, res) => {
-//     res.json({ msg: 'From API' })
-// });
+server.use(morgan('dev'))
+
+// API calls
+server.use('/api/products', productsRouter);
 
 // Docs
 server.use('/docs', swagerUI.serve, swagerUI.setup(swaggerSpec, swagggerUiOptions));
